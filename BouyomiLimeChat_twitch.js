@@ -11,6 +11,7 @@
 //   ・スクリプトの設定画面の閉じるボタンを押す。
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2015.12.08 @shirataki_nico2 NGリスト機能を追加
 // 2015.11.24 @shirataki_nico2 twitch配信者向けのsubscriber_list登録を追加
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +24,7 @@ var bNick = true;
 var bInOut = false;
 
 //ビジーモード[常連ユーザ・購読者限定読み上げモード]（true:読む, false:読まない)
-var bBusyMode = true;
+var bBusyMode = false;
 
 //常連ユーザとPaypal購読者のみ読み上げするモード（true:読む, false:読まない)
 var bVeryBusyMode = false;
@@ -32,6 +33,8 @@ var bVeryBusyMode = false;
 //※ファイルパスは絶対パス指定。\\で区切ってください(Java Scriptの仕様のため）。
 var twitchSubscriptionsFilePath = "C:\\Users\\USER\\Documents\\subscriber_list.csv";
 
+
+//ユーザ名は、すべて小文字に変換して記載してください。
 //常連ユーザ名を追加してください。
 var friendlyUserList = [ 
 "test", "test2" 
@@ -40,6 +43,11 @@ var friendlyUserList = [
 //paypal購読ユーザ名を追加してください。
 var paypalSubscriptionList = [ 
 "test3", "test4" 
+];
+
+// bBusyModeの有無に関わらず読み上げないユーザ
+var ngList = [
+"nightbot", "nguser2"
 ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +95,15 @@ function checkUserFromSubscriptionList( a_CsvData, a_User )
  */
 function twitchUserChecker( a_User )
 {
+	for ( var ii = 0; ii < ngList.length; ii++ )
+	{
+		if ( ngList[ii] == a_User )
+		{
+			return false;
+		}
+	}
+
+
 	if ( bBusyMode == false )
 	{
 		return true;
