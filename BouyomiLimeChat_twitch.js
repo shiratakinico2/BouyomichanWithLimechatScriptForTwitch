@@ -11,6 +11,7 @@
 //   ・スクリプトの設定画面の閉じるボタンを押す。
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2015.12.08 @shirataki_nico2 NGワードリスト機能を追加
 // 2015.12.08 @shirataki_nico2 NGリスト機能を追加
 // 2015.11.24 @shirataki_nico2 twitch配信者向けのsubscriber_list登録を追加
 //
@@ -48,6 +49,11 @@ var paypalSubscriptionList = [
 // bBusyModeの有無に関わらず読み上げないユーザ
 var ngList = [
 "nightbot", "nguser2"
+];
+
+// NGワードを登録します。
+var ngWordList = [
+"fuck", "死ね"
 ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,6 +166,14 @@ function validateDelimiter( a_Nick, a_Text )
 		if ( lastDelimiter != -1 )
 		{
 			var validatedText = a_Text.slice( 0, lastDelimiter );
+
+			for ( var ii = 0; ii < ngWordList.length; ii++ )
+			{
+				if ( validatedText.lastIndexOf(ngWordList[ii]) != -1 )
+				{
+					return;
+				}
+			}
 
 			if (bNick){
 				addTalkTask(a_Nick + "。" + validatedText);
