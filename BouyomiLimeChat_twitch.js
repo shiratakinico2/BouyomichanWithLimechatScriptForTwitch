@@ -11,6 +11,7 @@
 //   ・スクリプトの設定画面の閉じるボタンを押す。
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2015.12.11 @shirataki_nico2 NGワード制限を全員にするか、常連・購読者以外だけを対象とするかを選択する機能を追加
 // 2015.12.08 @shirataki_nico2 NGワードリスト機能を追加
 // 2015.12.08 @shirataki_nico2 NGリスト機能を追加
 // 2015.11.24 @shirataki_nico2 twitch配信者向けのsubscriber_list登録を追加
@@ -38,7 +39,7 @@ var twitchSubscriptionsFilePath = "C:\\Users\\USER\\Documents\\subscriber_list.c
 //ユーザ名は、すべて小文字に変換して記載してください。
 //常連ユーザ名を追加してください。
 var friendlyUserList = [ 
-"test", "test2" 
+"test", "test2"
 ];
 
 //paypal購読ユーザ名を追加してください。
@@ -53,8 +54,11 @@ var ngList = [
 
 // NGワードを登録します。
 var ngWordList = [
-"fuck", "死ね"
+"fuck", "死ね。"
 ];
+
+// NGワード対応を常連ユーザ・購読者以外限定にするか（true: 常連ユーザ・購読者以外限定、false：全員）
+var ngWordSpecialUser = true;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -101,20 +105,6 @@ function checkUserFromSubscriptionList( a_CsvData, a_User )
  */
 function twitchUserChecker( a_User )
 {
-	for ( var ii = 0; ii < ngList.length; ii++ )
-	{
-		if ( ngList[ii] == a_User )
-		{
-			return false;
-		}
-	}
-
-
-	if ( bBusyMode == false )
-	{
-		return true;
-	}
-
 	var acceptStatus = false;
 
 	// 常連さんチェック
@@ -167,14 +157,6 @@ function validateDelimiter( a_Nick, a_Text )
 		{
 			var validatedText = a_Text.slice( 0, lastDelimiter );
 
-			for ( var ii = 0; ii < ngWordList.length; ii++ )
-			{
-				if ( validatedText.lastIndexOf(ngWordList[ii]) != -1 )
-				{
-					return;
-				}
-			}
-
 			if (bNick){
 				addTalkTask(a_Nick + "。" + validatedText);
 			} else {
@@ -206,10 +188,36 @@ function addTalkTask(text) {
 
 function talkChat(prefix, text) {
 //↓ ここから追加 ( @shirataki_nico2 )
-	if ( twitchUserChecker(prefix.nick) == true )
+
+	for ( var ii = 0; ii < ngList.length; ii++ )
 	{
-		validateDelimiter( prefix.nick, text );
+		if ( ngList[ii] == prefix.nick )
+		{
+			return;
+		}
 	}
+
+
+	var usercheck = twitchUserChecker(prefix.nick);
+
+	if ( (bBusyMode == true || bVeryBusyMode == true )&& usercheck == false )
+	{
+		return
+	}
+
+	if ( (ngWordSpecialUser==false) || (ngWordSpecialUser== true && usercheck == false) )
+	{
+		for ( var ii = 0; ii < ngWordList.length; ii++ )
+		{
+			if ( text.lastIndexOf(ngWordList[ii]) != -1 )
+			{
+				return;
+			}
+		}
+	}
+
+	validateDelimiter( prefix.nick, text );
+
 //↑ ここまで追加 ( @shirataki_nico2 )
 }
 
