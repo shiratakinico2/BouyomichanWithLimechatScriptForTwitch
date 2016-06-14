@@ -11,7 +11,10 @@
 //   ・スクリプトの設定画面の閉じるボタンを押す。
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
 // 2016.06.14 @shirataki_nico2 句点以外も読み上げ判断の対象にできるよう変更（デリミタ指定）。合わせて、デリミタを判断材料に使うかを設定可能に（デリミタ読み上げ）。
+=======
+>>>>>>> origin/master
 // 2015.12.11 @shirataki_nico2 NGワード制限を全員にするか、常連・購読者以外だけを対象とするかを選択する機能を追加
 // 2015.12.08 @shirataki_nico2 NGワードリスト機能を追加
 // 2015.12.08 @shirataki_nico2 NGリスト機能を追加
@@ -61,7 +64,7 @@ var ngList = [
 
 // NGワードを登録します。
 var ngWordList = [
-"fuck", "死ね"
+"fuck", "死ね。"
 ];
 
 // NGワード対応を常連ユーザ・購読者以外限定にするか（true: 常連ユーザ・購読者以外限定、false：全員）
@@ -163,6 +166,7 @@ function validateDelimiter( a_Nick, a_Text )
 			// デリミタまで読み上げるため、検索する。
 			var lastDelimiter = a_Text.lastIndexOf(delimiterString);
 
+<<<<<<< HEAD
 			if ( lastDelimiter != -1 )
 			{
 				log("bbb");
@@ -179,6 +183,8 @@ function validateDelimiter( a_Nick, a_Text )
 		}
 		else
 		{
+=======
+>>>>>>> origin/master
 			if (bNick){
 				addTalkTask(a_Nick + "。" + a_Text);
 			} else {
@@ -211,6 +217,7 @@ function talkChat(prefix, text) {
 //↓ ここから追加 ( @shirataki_nico2 )
 
 	for ( var ii = 0; ii < ngList.length; ii++ )
+<<<<<<< HEAD
 	{
 		if ( ngList[ii] == prefix.nick )
 		{
@@ -223,6 +230,20 @@ function talkChat(prefix, text) {
 
 	if ( (bBusyMode == true || bVeryBusyMode == true )&& usercheck == false )
 	{
+=======
+	{
+		if ( ngList[ii] == prefix.nick )
+		{
+			return;
+		}
+	}
+
+
+	var usercheck = twitchUserChecker(prefix.nick);
+
+	if ( (bBusyMode == true || bVeryBusyMode == true )&& usercheck == false )
+	{
+>>>>>>> origin/master
 		return
 	}
 
